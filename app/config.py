@@ -17,9 +17,18 @@ class Config:
     # 数据库的操作
     # orm 对象关系映射模型
     #
+    SECRET_KEY = 'AFDADF122121ASADF'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # 邮件配置
+    MAIL_SERVER = 'smtp.qq.com'     # 邮件服务器地址
+    MAIL_USERNAME = '1227794413@qq.com'    # 邮件账户名
+    MAIL_PASSWORD = 'ekdevueqmiwshhhf'     # 邮件账户授权码
+
+    @staticmethod
+    def init_app(app):
+        pass
 
 # 开发环境数据库
 class DevelopmentConfig(Config):

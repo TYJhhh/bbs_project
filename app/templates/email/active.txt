@@ -1,0 +1,2 @@
+hello {{ username }}
+激活账户请点击右侧链接{{ url_for('user.activate',token=token) }}  激活
