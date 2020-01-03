@@ -1,4 +1,4 @@
-from app.extensions import db
+from app.extensions import db, loginmanager
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 #                                     加密             解密
@@ -6,12 +6,16 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Integer,primary_key=True)
-    username = db.Column(db.String(64),unique=True)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(128))
-    email = db.Column(db.String(128),unique=True)
-    confirmed = db.Column(db.Boolean,default=False)
-    # icon = db.Column(db.String(64),default='default.jpg')
+    email = db.Column(db.String(128), unique=True)
+    confirmed = db.Column(db.Boolean, default=False)
+    icon = db.Column(db.String(64), default='default.jpg')
+
+    # 添加关联模型    我们后期想知道这个文章是谁发表的
+    # 这个作者发表了哪些文章
+    posts = db.relationship('Posts', backref='user', lazy='dynamic')
 
     # 1密码用户返回
     # 2不能读密码
@@ -56,3 +60,9 @@ class User(UserMixin, db.Model):
             u.confirmed = True
             db.session.add(u)  # 将数据库中的字段 激活
         return True
+
+# 登录认证的 一个回调函数  也就是要告诉服务器到底是谁登录了
+# 退出登录 也需要知道该删除谁的session
+@loginmanager.user_loader
+def user_loader(uid):
+    return User.query.get(int(uid))

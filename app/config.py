@@ -26,6 +26,9 @@ class Config:
     MAIL_USERNAME = '1227794413@qq.com'    # 邮件账户名
     MAIL_PASSWORD = 'ekdevueqmiwshhhf'     # 邮件账户授权码
 
+    # 加载本地bootstrap静态文件
+    BOOTSTRAP_SERVE_LOCAL = True
+
     @staticmethod
     def init_app(app):
         pass

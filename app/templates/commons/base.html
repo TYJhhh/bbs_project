@@ -1,10 +1,12 @@
 {% extends 'bootstrap/base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
+
 {# 定制标题 #}
 {% block title %}默认标题{% endblock %}
+
 {# 定制导航条 #}
 {% block navbar %}
-    <nav class="navbar navbar-inverse" style="border-radius: 0px;">
+    <nav class="navbar navbar-inverse" style="border-radius: 0px 0px 5px 5px;">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -15,42 +17,45 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="">首页</a>
+                <a class="navbar-brand" href="{{ url_for('main.index') }}">首页</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="https://www.baidu.com">板块一</a></li>
+                    <li><a href="#">板块一</a></li>
                     <li><a href="#">板块二</a></li>
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-
-                    <li><a href="">退出</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false"><span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="">用户信息</a></li>
-                            <li><a href="#">修改密码</a></li>
-                            <li><a href="#">修改邮箱</a></li>
-                            <li><a href="#">修改头像</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a href="#">注册</a></li>
-                    <li><a href="#">登录</a></li>
-
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('user.logout') }}">退出</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                               aria-expanded="false">你好, {{ current_user.username }} <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">用户信息</a></li>
+                                <li><a href="#">修改密码</a></li>
+                                <li><a href="#">修改邮箱</a></li>
+                                <li><a href="#">修改头像</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <img style="width: 36px; height: 36px; border-radius: 50%; float: left; margin-top: -8px" src="{{ url_for('static', filename='images/' + current_user.icon) }}" alt="...">
+                            </a>
+                        </li>
+                    {% else %}
+                        <li><a href="{{ url_for('user.register') }}">注册</a></li>
+                        <li><a href="{{ url_for('user.login') }}">登录</a></li>
+                    {% endif %}
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container -->
     </nav>
 {% endblock %}
 
-
-{#定制内容#}
-
+{# 定制内容 #}
 {% block content %}
     <div class="container">
         {% for message in get_flashed_messages() %}
@@ -68,9 +73,12 @@
     </div>
 {% endblock %}
 
-
-{#定制脚本 #}
-
+{# 定制脚本 #}
 {% block scripts %}
+    {{ super() }}
+{% endblock %}
 
+{# 定制样式 #}
+{% block styles %}
+    {{ super() }}
 {% endblock %}

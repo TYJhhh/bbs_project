@@ -1,0 +1,23 @@
+{% extends 'commons/base.html' %}
+{% from 'commons/macro.html' import pagination_show %}
+
+{% block title %}主页{% endblock %}
+
+{% block page_content %}
+    {{ wtf.quick_form(form) }}
+    {% for post in posts %}
+        <div class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='images/' + post.user.icon) }}" alt="...">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{ post.user.username }}</h4>
+                {{ post.content }}
+            </div>
+        </div>
+    {% endfor %}
+
+    {{ pagination_show(pagination,'main.index') }}
+{% endblock %}
