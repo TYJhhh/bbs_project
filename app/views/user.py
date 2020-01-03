@@ -26,7 +26,7 @@ def index():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():  # 判断表单输入数据是否符合要求
-        u = User(username=form.username.data, password_hash=form.password.data, email=form.email.data)
+        u = User(username=form.username.data, password=form.password.data, email=form.email.data)
         db.session.add(u)
         db.session.commit()
 
@@ -40,7 +40,7 @@ def register():
         flash("邮件发送成功 点击链接激活用户")
 
         # 跳转到 首页 进行登录
-        return redirect(url_for('main.index'))
+        # return redirect(url_for('main.index'))
     return render_template('user/register.html', form=form)
 
 

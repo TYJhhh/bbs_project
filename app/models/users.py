@@ -1,9 +1,10 @@
 from app.extensions import db
 from flask import current_app
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 #                                     加密             解密
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-class User(db.Model):
+from flask_login import UserMixin
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(64),unique=True)
