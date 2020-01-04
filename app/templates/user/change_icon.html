@@ -1,0 +1,10 @@
+{% extends 'commons/base.html' %}
+
+{% block title %}头像{% endblock %}
+
+{% block page_content %}
+    {% if img_url %}
+        <img src="{{ img_url }}" alt="头像">
+    {% endif %}
+    {{ wtf.quick_form(form) }}
+{% endblock %}

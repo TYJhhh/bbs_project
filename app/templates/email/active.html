@@ -1,2 +1,29 @@
-<h1>hello {{ username }}</h1>
-<p>激活账户请点击下侧链接</p><a href="{{ url_for('user.activate',token=token,_external=True) }}">激活</a>
+<div style="
+    width: 90%;
+    height: 90%;
+    background: #f6f6f6;
+    padding-top: 30px;
+    margin: auto";>
+    <div style="
+        width: 300px;
+        height: 280px;
+        margin: auto;
+        background: #FFFFFF;
+        border-radius: 10px;
+        box-shadow: -5px 5px 10px #808080;
+        font-family: Verdana,Microsoft YaHei,Arial,Helvetica,sans-serif;
+        text-align: center;">
+        <div style="
+            height: 70px;
+            border-bottom: 1px ridge;
+            text-align: center;
+            font-size: 20px;
+            font-family: 黑体;
+            color: #808080;
+            line-height: 70px;">
+                邮箱验证
+        </div>
+        <h2>Hello, {{ username }}</h2>
+        <p style="margin-top: 30px">激活账户请点击下侧链接</p><a href="{{ url_for('user.activate',token=token,_external=True) }}">点我激活</a>
+    </div>
+</div>

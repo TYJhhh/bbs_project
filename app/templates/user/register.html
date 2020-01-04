@@ -23,13 +23,79 @@
         .register_frame{
             width: 350px;
             height: 400px;
-            margin-top: 10%;
-            margin-left: 40%;
+            margin-top: 8%;
+            margin-left: 38.55%;
             background-color: #FFFFFF;
             opacity: 0.85;
             border-radius: 8px;
             box-shadow: -5px 5px 10px #808080;
-            padding: 20px;
+        }
+        .register_input{
+            width: 222px;
+            height: 38px;
+            padding: 10px 0 10px 10px;
+            font-family: "\5b8b\4f53";
+            font-size: 16px;
+            margin-left: 90px;
+            margin-top: 21px;
+            border-radius: 5px;
+            border: 1px solid #808080;
+            outline: medium;
+        }
+        .register_input:focus{
+            border-color: #9ecaed;
+            box-shadow: 0 0 5px #666666;
+        }
+        .register_btn{
+            border: 1px solid #666666;
+            position: absolute;
+            width: 270px;
+            height: 40px;
+            text-decoration: none;
+            line-height: 38px;
+            text-align: center;
+            margin: 22px 39px;
+            color: #FFFFFF;
+            background-color: #666666;
+            border-radius: 10px;
+            font-family: "田氏宋体旧字形";
+            font-size: 17px;
+        }
+        .register_btn:hover{
+            border-color: #778899;
+            background-color: #778899;
+            box-shadow: 0 0 5px #778899;
+            cursor: pointer;
+        }
+        #ttl{
+            height: 65px;
+            border-bottom: 1px ridge;
+            text-align: center;
+            font-size: 20px;
+            font-family: "黑体";
+            color: #808080;
+            line-height: 65px;
+        }
+        #register_input_frame{
+            width: 100%;
+            height: 62px;
+        }
+        .register_label{
+            width: 48px;
+            height: 48px;
+            position: absolute;
+            margin: 14px 27px;
+            background-color: #DCDCDC;
+            background: url(/images/register_upe.png) no-repeat;
+            z-index: 5;
+        }
+        .err_msg{
+            color: #a94442;
+            font: 14px '\5b8b\4f53';
+            display: block;
+            margin-left: 100px;
+            margin-top: 5px;
+            margin-bottom: 10px;
         }
     </style>
 {% endblock %}
@@ -37,7 +103,50 @@
 {% block page_content %}
     <div class="bg">
         <div class="register_frame">
-            {{ wtf.quick_form(form) }}
+{#            {{ wtf.quick_form(form) }}#}
+            <form method="post">
+                {{ form.hidden_tag() }}
+                <div id="ttl">
+                    注册用户
+                </div>
+                <div id="register_input_frame">
+                    <label class="register_label" style="background-position: 0px -1px;"></label>
+                    {% if form.errors.username %}
+                        {{ form.username(class="register_input", style="border-color: #a94442", placeholder="用户名") }}
+                        <br><span class="err_msg">{{ form.errors.username[0] }}</span>
+                    {% else %}
+                        {{ form.username(class="register_input", placeholder="用户名") }}
+                    {% endif %}
+                </div>
+                <div id="register_input_frame">
+                    <label class="register_label" style="background-position: -50px -1px;"></label>
+                    {% if form.errors.password %}
+                        {{ form.password(class="register_input", style="border-color: #a94442", placeholder="密码") }}
+                        <br><span class="err_msg">{{ form.errors.password[0] }}</span>
+                    {% else %}
+                        {{ form.password(class="register_input", placeholder="密码") }}
+                    {% endif %}
+                </div>
+                <div id="register_input_frame">
+                    <label class="register_label" style="background-position: 0px -50px;"></label>
+                    {% if form.errors.confirm %}
+                        {{ form.confirm(class="register_input", style="border-color: #a94442", placeholder="确认密码") }}
+                        <br><span class="err_msg">{{ form.errors.confirm[0] }}</span>
+                    {% else %}
+                        {{ form.confirm(class="register_input", placeholder="确认密码") }}
+                    {% endif %}
+                </div>
+                <div id="register_input_frame">
+                    <label class="register_label" style="background-position: -50px -50px;"></label>
+                    {% if form.errors.email %}
+                        {{ form.email(class="register_input", style="border-color: #a94442", placeholder="邮箱") }}
+                        <br><span class="err_msg">{{ form.errors.email[0] }}</span>
+                    {% else %}
+                        {{ form.email(class="register_input", placeholder="邮箱") }}
+                    {% endif %}
+                </div>
+                {{ form.submit(class="register_btn") }}
+            </form>
         </div>
     </div>
 {% endblock %}

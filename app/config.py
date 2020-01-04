@@ -26,6 +26,10 @@ class Config:
     MAIL_USERNAME = '1227794413@qq.com'    # 邮件账户名
     MAIL_PASSWORD = 'ekdevueqmiwshhhf'     # 邮件账户授权码
 
+    # 文件上传的配置信息
+    MAX_CONTENT_LENGTH = 8*1024*1024    # 上传文件的大小
+    UPLOADED_PHOTOS_DEST = os.path.join(base_dir, 'static/uploads')
+
     # 加载本地bootstrap静态文件
     BOOTSTRAP_SERVE_LOCAL = True
 

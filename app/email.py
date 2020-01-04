@@ -17,7 +17,7 @@ def send_mail(to, subject, template, **kwargs):
     msg = Message(subject=subject, recipients=[to], sender=app.config['MAIL_USERNAME'])
 
     #浏览器端显示的内容
-    msg.html = render_template(template+'.html',**kwargs)
+    msg.html = render_template(template+'.html', **kwargs)
 
     #客户端显示的内容
     msg.body = render_template(template + '.txt', **kwargs)

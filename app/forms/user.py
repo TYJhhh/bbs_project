@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+from app.extensions import photos
 class RegisterForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired(), Length(6, 30, message="用户名长度不符合要求")])
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 30, message="密码长度不符合要求")])
@@ -13,3 +15,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('密码', validators=[DataRequired(), Length(6, 30, message="密码长度不符合要求")])
     remember = BooleanField('记住我')
     submit = SubmitField('登录')
+
+# 头像上传表单
+class UploadedForm(FlaskForm):
+    icon = FileField('头像', validators=[FileRequired('请选择头像'), FileAllowed(photos, FileAllowed(photos, message='只能上传图片'))])
+    submit = SubmitField('立即上传')

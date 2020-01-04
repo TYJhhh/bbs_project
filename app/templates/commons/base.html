@@ -29,7 +29,11 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('user.logout') }}">退出</a></li>
+                        <li>
+                            <a href="#">
+                                <img style="width: 36px; height: 36px; border-radius: 50%; float: left; margin-top: -8px" src="{{ url_for('static', filename='uploads/' + current_user.icon) }}" alt="...">
+                            </a>
+                        </li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                aria-expanded="false">你好, {{ current_user.username }} <span class="caret"></span></a>
@@ -37,13 +41,9 @@
                                 <li><a href="#">用户信息</a></li>
                                 <li><a href="#">修改密码</a></li>
                                 <li><a href="#">修改邮箱</a></li>
-                                <li><a href="#">修改头像</a></li>
+                                <li><a href="{{ url_for('user.change_icon') }}">修改头像</a></li>
+                                <li><a href="{{ url_for('user.logout') }}">退出</a></li>
                             </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <img style="width: 36px; height: 36px; border-radius: 50%; float: left; margin-top: -8px" src="{{ url_for('static', filename='images/' + current_user.icon) }}" alt="...">
-                            </a>
                         </li>
                     {% else %}
                         <li><a href="{{ url_for('user.register') }}">注册</a></li>
@@ -76,6 +76,8 @@
 {# 定制脚本 #}
 {% block scripts %}
     {{ super() }}
+    {{ moment.include_moment() }}
+    {{ moment.locale('zh-CN') }}
 {% endblock %}
 
 {# 定制样式 #}

@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 #                                     加密             解密
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
+from app.models.posts import Posts
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -16,12 +17,35 @@ class User(UserMixin, db.Model):
     # 添加关联模型    我们后期想知道这个文章是谁发表的
     # 这个作者发表了哪些文章
     posts = db.relationship('Posts', backref='user', lazy='dynamic')
+    favorites = db.relationship('Posts', secondary="collections", backref=db.backref('users', lazy='dynamic'), lazy='dynamic')
 
     # 1密码用户返回
     # 2不能读密码
     @property
     def password(self):
         raise AttributeError('密码不可读')
+
+    # 判断用户是否收藏
+    def is_favorite(self, pid):
+        # 获取所有收藏的帖子
+        favorites = self.favorites.all()
+        # 判断传过来的帖子是否在 收藏的列表中
+        # 最后转成列表 判断长度 如果大于0 说明收藏了
+        posts = list(filter(lambda p: p.id == pid, favorites))
+        if len(posts) > 0:
+            return True
+        else:
+            return False
+
+    # 收藏帖子
+    def add_favorite(self, pid):
+        p = Posts.query.get(pid)    # 根据 pid查出帖子详情
+        self.favorites.append(p)    # 会将 帖子id 用户id 写入第三张表
+
+    # 取消收藏帖子
+    def del_favorite(self, pid):
+        p = Posts.query.get(pid)
+        self.favorites.remove(p)
 
     # 保存加密后的密码
     @password.setter
