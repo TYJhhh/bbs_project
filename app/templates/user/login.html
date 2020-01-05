@@ -153,6 +153,7 @@
                     {{ form.password(id="paswd", class="login_input", placeholder="密码") }}
                 {% endif %}
             </div>
+{#            {{ form.remember.label }}{{ form.remember }}#}
             <a href="#" class="forget">忘记密码</a>
             {{ form.submit(value="登   录", class="login_btn") }}
             <a href="{{ url_for('user.register') }}" class="go_to_reg">去注册</a>

@@ -30,7 +30,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
                         <li>
-                            <a href="#">
+                            <a href="{{ url_for('user.change_icon') }}">
                                 <img style="width: 36px; height: 36px; border-radius: 50%; float: left; margin-top: -8px" src="{{ url_for('static', filename='uploads/' + current_user.icon) }}" alt="...">
                             </a>
                         </li>
@@ -41,7 +41,7 @@
                                 <li><a href="#">用户信息</a></li>
                                 <li><a href="#">修改密码</a></li>
                                 <li><a href="#">修改邮箱</a></li>
-                                <li><a href="{{ url_for('user.change_icon') }}">修改头像</a></li>
+{#                                <li><a href="{{ url_for('user.change_icon') }}">修改头像</a></li>#}
                                 <li><a href="{{ url_for('user.logout') }}">退出</a></li>
                             </ul>
                         </li>
