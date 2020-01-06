@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, ValidationError, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, Email
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from app.extensions import photos
@@ -28,4 +28,7 @@ class LoginForm(FlaskForm):
 # 头像上传表单
 class UploadedForm(FlaskForm):
     icon = FileField('头像', validators=[FileRequired('请选择头像'), FileAllowed(photos, FileAllowed(photos, message='只能上传图片'))])
-    submit = SubmitField('立即上传')
+    name = StringField('姓名', validators=[Length(0, 64)])
+    location = StringField('坐标', validators=[Length(0, 64)])
+    about_me = TextAreaField('关于我')
+    submit = SubmitField('提交修改')

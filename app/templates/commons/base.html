@@ -6,7 +6,7 @@
 
 {# 定制导航条 #}
 {% block navbar %}
-    <nav class="navbar navbar-inverse" style="border-radius: 0px 0px 5px 5px;">
+    <nav class="navbar navbar-inverse" style="border-radius: 0px 0px 5px 5px; -webkit-user-select: none;">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -30,7 +30,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
                         <li>
-                            <a href="{{ url_for('user.change_icon') }}">
+                            <a href="#">
                                 <img style="width: 36px; height: 36px; border-radius: 50%; float: left; margin-top: -8px" src="{{ url_for('static', filename='uploads/' + current_user.icon) }}" alt="...">
                             </a>
                         </li>
@@ -38,7 +38,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                aria-expanded="false">你好, {{ current_user.username }} <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">用户信息</a></li>
+                                <li><a href="{{ url_for('user.user_info') }}">个人资料</a></li>
                                 <li><a href="#">修改密码</a></li>
                                 <li><a href="#">修改邮箱</a></li>
 {#                                <li><a href="{{ url_for('user.change_icon') }}">修改头像</a></li>#}

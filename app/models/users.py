@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 from app.models.posts import Posts
+from datetime import datetime
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -13,6 +14,12 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(128), unique=True)
     confirmed = db.Column(db.Boolean, default=False)
     icon = db.Column(db.String(64), default='default.jpg')
+
+    name = db.Column(db.String(64))
+    location = db.Column(db.String(64))
+    about_me = db.Column(db.Text())
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
 
     # 添加关联模型    我们后期想知道这个文章是谁发表的
     # 这个作者发表了哪些文章
@@ -84,6 +91,12 @@ class User(UserMixin, db.Model):
             u.confirmed = True
             db.session.add(u)  # 将数据库中的字段 激活
         return True
+
+    # 刷新最后登录的时间
+    def ping(self):
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
+        db.session.commit()
 
 # 登录认证的 一个回调函数  也就是要告诉服务器到底是谁登录了
 # 退出登录 也需要知道该删除谁的session

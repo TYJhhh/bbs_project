@@ -1,0 +1,24 @@
+{% extends 'commons/base.html' %}
+{% block title %}个人资料{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <img style="border-radius: 50%" src="{{ url_for('static', filename='uploads/' + current_user.icon) }}" alt="头像">
+        <h1>用户名：{{ current_user.username }}</h1>
+        {% if current_user.name or current_user.location %}
+            <p>
+                {% if current_user.name %}姓名：{{ current_user.name }}<br>{% endif %}
+                {% if current_user.location %}
+                    坐标：<a href="http://maps.google.com/?q={{ current_user.location }}">{{ current_user.location }}</a>
+                {% endif %}
+            </p>
+        {% endif %}
+        <p>邮箱：<a href="mailto:{{ current_user.email }}">{{ current_user.email }}</a></p>
+        {% if current_user.about_me %}<p>关于我：{{ current_user.about_me }}</p>{% endif %}
+        <p>
+            注册时间：{{ moment(current_user.member_since).format('L') }}<br>
+            最后操作时间：{{ moment(current_user.last_seen).fromNow() }}
+        </p>
+        <a href="{{ url_for('user.change_icon') }}">修改资料</a>
+    </div>
+{% endblock %}

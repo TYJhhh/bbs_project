@@ -1,12 +1,12 @@
 {% extends 'commons/base.html' %}
 
-{% block title %}修改头像{% endblock %}
+{% block title %}修改资料{% endblock %}
 
 {% block page_content %}
-    <div style="width: 600px; margin: 50px auto; padding-left: 20%;">
-        <h3>修改头像</h3>
+    <div style="width: 600px; margin: 50px 15%; padding-left: 20%;">
+        <h3>修改资料</h3>
         {% if img_url %}
-            <img src="{{ img_url }}" alt="头像">
+            <img style="border-radius: 50%" src="{{ img_url }}" alt="头像">
         {% endif %}
         {{ wtf.quick_form(form) }}
     </div>

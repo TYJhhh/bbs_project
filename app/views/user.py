@@ -4,7 +4,7 @@ from app.forms import RegisterForm, LoginForm, UploadedForm
 from app.models import User
 from app.extensions import db, photos
 from app.email import send_mail
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, current_user, login_required
 from PIL import Image
 
 user = Blueprint('user', __name__)
@@ -12,7 +12,7 @@ user = Blueprint('user', __name__)
 
 @user.route('/', methods=['GET', 'POST'])
 def index():
-    # GET请求 为了 让用户看到 战士的界面
+    # GET请求 为了 让用户看到 展示的界面
     return '我是个人中心页面'
 
     # post请求为了提交数据
@@ -77,6 +77,12 @@ def login():
             flash("密码无效")
     return render_template('user/login.html', form=form)
 
+# 登录的时候刷新登录时间
+@user.before_app_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.ping()
+
 
 @user.route('/logout/')
 def logout():
@@ -111,11 +117,28 @@ def change_icon():
         current_user.icon = filename    # 通过更新属性的值来更新数据库
         db.session.add(current_user)    # 更新当前用户的信息
         flash("头像已保存")
-        return redirect(url_for('user.change_icon'))
+
+        # 个人资料
+        current_user.name = form.name.data
+        current_user.location = form.location.data
+        current_user.about_me = form.about_me.data
+        db.session.add(current_user._get_current_object())
+        db.session.commit()
+        flash('资料修改成功')
+        return redirect(url_for('user.user_info'))
     img_url = photos.url(current_user.icon) # 获取上传图片的地址 用于显示
+    form.name.data = current_user.name
+    form.location.data = current_user.location
+    form.about_me.data = current_user.about_me
     return render_template('user/change_icon.html', form=form, img_url=img_url)
 
 def random_string(length=32):
     import random
     base_string = 'qwertyuiopasdfghjklzxcvbnm0123456789'
     return "".join(random.choice(base_string) for i in range(length))
+
+@user.route('/user_info')
+@login_required
+def user_info():
+    # u = User.query.filter_by(username=username).first_or_404()
+    return render_template('user/user.html')
