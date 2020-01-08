@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import current_user
 from app.models import Posts
+import requests
 
 main = Blueprint('main', __name__)
 

@@ -5,7 +5,7 @@
     {{ super() }}
     <style>
         .left_cont{width: 199px;height:280px;float: left; border: 1px solid rgba(0, 0, 0, .06); padding: 5px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px}
-        .right_cont{width: 900px;height: 520px;margin: 0 20px;display: inline-block}
+        .right_cont{width: 900px;margin: 0 20px; margin-bottom: 30px; display: inline-block}
         h3 {font-size: 20px;color: #3d3d3d;height: 90px;line-height: 90px;border-bottom: 1px solid #e0e0e0;margin: 0;}
         .user_info{float:left;margin-right: 16px;width: 900px;}
         .header{width: 100px;border-radius: 50%;float: left;margin: 5px 10px;}
@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block page_content %}
-    <div class="left_cont" >
+    <div class="left_cont" style="background: white" >
         <ul>
             <li class="side1"><a href="{{ url_for('user.index', username=user.username) }}" class="aside">{% if current_user.username == user.username %}我{% else %}Ta{% endif %}的资料</a></li>
             {% if current_user.username == user.username %}
@@ -36,7 +36,7 @@
             <li class="side4"><a href="{{ url_for('user.my_fav', username=user.username) }}">{% if current_user.username == user.username %}我{% else %}Ta{% endif %}的喜欢</a></li>
         </ul>
     </div>
-    <div class="right_cont">
+    <div class="right_cont" style="background: white; border: 1px solid rgba(0, 0, 0, .06); padding: 0 20px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px">
         <h3>{% if current_user.username == user.username %}我{% else %}Ta{% endif %}的喜欢({{ user.favorites.count() }})</h3>
         <div class="book">
             <ul class=entries>

@@ -3,10 +3,22 @@
 
 {% block title %}首页{% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <style>
+        .normal{
+            padding: 10px;
+            box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06);
+            border-radius: 5px;
+            background: white;
+        }
+    </style>
+{% endblock %}
+
 {% block page_content %}
-    <span style="padding: 10px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px">全部博客</span>
+    <span class="normal">全部博客</span>
     {% for post in posts %}
-        <div class="media" style="padding: 10px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px">
+        <div class="media normal">
             <div class="media-left">
                 <a href="{{ url_for('user.index', username=post.user.username) }}" target="_blank">
                     <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='uploads/' + post.user.icon) }}" alt="...">

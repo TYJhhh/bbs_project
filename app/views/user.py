@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
-from app.forms import RegisterForm, LoginForm, UploadedForm
+from app.forms import RegisterForm, LoginForm, UploadedForm, ChangePwd, ForgetPwd
 from app.models import User, Posts
 from app.extensions import db, photos
 from app.email import send_mail
@@ -39,9 +39,6 @@ def my_fav(username):
 # 定制注册页面
 # 表单 表单验证
 # token安全机制
-
-# 登录
-# flask_login 处理登录的逻辑
 @user.route('/register/', methods=['POST', 'GET'])
 def register():
     form = RegisterForm()
@@ -73,7 +70,8 @@ def activate(token):
         flash("账户激活失败")
         return redirect(url_for('user.register'))
 
-
+# 登录
+# flask_login 处理登录的逻辑
 @user.route('/login/', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
@@ -91,7 +89,7 @@ def login():
             flash("登录成功")
             return redirect(request.args.get('next') or url_for('main.index'))
         else:
-            flash("密码无效")
+            flash("密码错误")
     return render_template('user/login.html', form=form)
 
 # 登录的时候刷新登录时间
@@ -176,3 +174,40 @@ def del_post(id):
     db.session.commit()
     flash("删除成功")
     return redirect(url_for('user.my_blog', username=current_user.username))
+
+@user.route('/change_password/<username>', methods=['POST', 'GET'])
+@login_required
+def change_password(username):
+    form = ChangePwd()
+    if form.validate_on_submit():
+        u = User.query.filter_by(username=username).first_or_404()
+        oldPwd = form.old_password.data
+        newPwd = form.new_password.data
+        if u.verify_password(password=oldPwd):
+            u.password = newPwd
+            logout_user()
+            flash("修改成功")
+            return redirect(url_for('user.login'))
+        else:
+            flash('原密码错误')
+    return render_template('user/change_password.html', form=form)
+
+@user.route('/forget_password/', methods=['POST', 'GET'])
+def forget_password():
+    form = ForgetPwd()
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        u = User.query.filter_by(username=username).first()
+        if u:
+            if u.email == email:
+                reset_password = random_string(length=6)
+                u.password = reset_password
+                send_mail(email, '重置密码', 'email/get_password', username=username, reset_password=reset_password)
+                flash("重置密码已经发送到邮箱，注意查收")
+                return redirect(url_for('user.login'))
+            else:
+                flash("邮箱不正确")
+        else:
+            flash("用户不存在")
+    return render_template('user/forget_password.html', form=form)

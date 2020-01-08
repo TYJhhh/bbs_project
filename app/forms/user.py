@@ -32,3 +32,14 @@ class UploadedForm(FlaskForm):
     location = StringField('坐标', validators=[Length(0, 64)])
     about_me = TextAreaField('关于我')
     submit = SubmitField('提交修改')
+
+class ChangePwd(FlaskForm):
+    old_password = PasswordField('原密码', validators=[DataRequired(), Length(6, 30, message="密码长度不符合要求")])
+    new_password = PasswordField('新密码', validators=[DataRequired(), Length(6, 30, message="密码长度不符合要求")])
+    confirm_new_password = PasswordField('确认新密码', validators=[EqualTo('new_password', message="两次密码不一致")])
+    submit = SubmitField('提交修改')
+
+class ForgetPwd(FlaskForm):
+    username = StringField('用户名', validators=[DataRequired(), Length(6, 30, message="用户名长度不符合要求")])
+    email = StringField('邮箱', validators=[Email(message="邮箱格式不正确")])
+    submit = SubmitField('提交')

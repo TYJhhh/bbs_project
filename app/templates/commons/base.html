@@ -6,7 +6,7 @@
 
 {# 定制导航条 #}
 {% block navbar %}
-    <nav class="navbar navbar-inverse" style="border-radius: 0px 0px 5px 5px; -webkit-user-select: none;">
+    <nav class="navbar navbar-inverse" style="border-radius: 0px 0px 5px 5px; -webkit-user-select: none; font-size: 16px">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -41,8 +41,8 @@
                             <ul class="dropdown-menu">
                                 <li><a href="{{ url_for('user.index', username=current_user.username) }}" target="_blank">个人中心</a></li>
 {#                                <li><a href="{{ url_for('user.user_info', username=current_user.username) }}">个人资料</a></li>#}
-                                <li><a href="#">修改密码</a></li>
-                                <li><a href="#">修改邮箱</a></li>
+                                <li><a href="{{ url_for('user.change_password', username=current_user.username) }}">修改密码</a></li>
+{#                                <li><a href="#">修改邮箱</a></li>#}
 {#                                <li><a href="{{ url_for('user.change_icon') }}">修改头像</a></li>#}
                                 <li><a href="{{ url_for('user.logout') }}">退出</a></li>
                             </ul>
@@ -88,7 +88,12 @@
     <style>
         body{
             -webkit-user-select: none;
-            background: #f6f6f6;
+            {#background: #f6f6f6;#}
+            font-family: "田氏宋体旧字形";
+            background-image: url(/images/1214879.jpg);
+            background-repeat: no-repeat;
+            -webkit-background-size: 100% 100%;
+            z-index: -1;
         }
     </style>
 {% endblock %}
