@@ -1,0 +1,69 @@
+{% extends 'commons/base.html' %}
+{% block title %}
+    {% if modify_code==159 %}
+        博客内容修改
+    {% else %}
+        博客内容编辑
+    {% endif %}
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <style>
+        .content{
+            width: 39.5%;
+            min-height: 575px;
+            float: left;
+            resize: none;
+            margin-right: 10px;
+            border-radius: 5px;
+            padding: 5px 5px;
+        }
+        .sub{
+            margin-left: 10px;
+            margin-bottom: 5px;
+        }
+        body{
+            -webkit-user-select: auto;
+        }
+    </style>
+{% endblock %}
+{% block page_content %}
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div style="width: 100%; height: 610px;">
+            {% if modify_code==159 %}
+                <b>博客修改</b>
+            {% else %}
+                {{ form.content.label }}
+            {% endif %}
+            {% if modify_code==159 %}
+                {{ form.submit(value="立即修改", class="sub btn btn-primary") }}
+            {% else %}
+                {{ form.submit(value="立即发表", class="sub btn btn-primary") }}
+            {% endif %}
+            <span style="margin-left: 55%; font-weight: bold">预览</span>
+            {{ form.content(class="content form-control") }}
+        </div>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ pagedown.include_pagedown() }}
+    <script>
+        window.onload = function () {
+            var down = document.getElementById("flask-pagedown-content-preview").style;
+            down.width = "59.5%";
+            down.cssFloat = "left";
+            down.border = "1px solid #e5e5e5";
+            down.boxShadow = "0 1px 10px 2px rgba(0, 0, 0, .06)";
+            down.borderRadius = "5px";
+            down.padding = "5px 10px";
+            down.wordWrap = "break-word";
+            down.wordBreak = "break-all";
+            down.marginBottom = "20px";
+            down.minHeight = "575px";
+            down.background = "white";
+        }
+    </script>
+{% endblock %}

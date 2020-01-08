@@ -1,24 +1,83 @@
 {% extends 'commons/base.html' %}
-{% block title %}个人资料{% endblock %}
+{% from 'commons/macro.html' import pagination_show %}
+{% block title %}个人资料 - {{ user.username }}{% endblock %}
 
 {% block page_content %}
     <div class="page-header">
-        <img style="border-radius: 50%" src="{{ url_for('static', filename='uploads/' + current_user.icon) }}" alt="头像">
-        <h1>用户名：{{ current_user.username }}</h1>
-        {% if current_user.name or current_user.location %}
+        <img style="border-radius: 50%" src="{{ url_for('static', filename='uploads/' + user.icon) }}" alt="头像">
+        <h1>用户名：{{ user.username }}</h1>
+        {% if user.name or user.location %}
             <p>
-                {% if current_user.name %}姓名：{{ current_user.name }}<br>{% endif %}
-                {% if current_user.location %}
-                    坐标：<a href="http://maps.google.com/?q={{ current_user.location }}">{{ current_user.location }}</a>
+                {% if user.name %}姓名：{{ user.name }}<br>{% endif %}
+                {% if user.location %}
+                    坐标：<a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>
                 {% endif %}
             </p>
         {% endif %}
-        <p>邮箱：<a href="mailto:{{ current_user.email }}">{{ current_user.email }}</a></p>
-        {% if current_user.about_me %}<p>关于我：{{ current_user.about_me }}</p>{% endif %}
+        <p>邮箱：<a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+        {% if user.about_me %}<p>关于我：{{ user.about_me }}</p>{% endif %}
         <p>
-            注册时间：{{ moment(current_user.member_since).format('L') }}<br>
-            最后操作时间：{{ moment(current_user.last_seen).fromNow() }}
+            注册时间：{{ moment(user.member_since).format('L') }}<br>
+            最后操作时间：{{ moment(user.last_seen).fromNow() }}
         </p>
-        <a href="{{ url_for('user.change_icon') }}">修改资料</a>
+        {% if current_user.username == user.username %}
+            <a href="{{ url_for('user.change_icon') }}">修改资料</a>
+        {% endif %}
     </div>
+    <h3>{% if current_user.username == user.username %}我{% else %}Ta{% endif %}发布的博客</h3>
+    {% for post in posts %}
+        <div class="media" style="padding: 10px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px">
+            <div class="media-left">
+                <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='uploads/' + post.user.icon) }}" alt="...">
+            </div>
+            <div class="media-body">
+                <div style="float: right">{{ moment(post.timestamp).fromNow() }}</div>
+                <h4 class="media-heading">{{ post.user.username }}</h4>
+                <span style="float: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 950px; max-height: 20px; color: grey">
+                    {% if post.body_html %}
+                        {{ post.body_text }}
+                    {% else %}
+                        {{ post.content }}
+                    {% endif %}
+                </span><br>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.username != post.user.username %}
+                        <span class="btn btn-warning btn-sm" style="font-size: 14px; padding: 0px;">
+                            <span class="collect" url="{{ url_for('posts.collect', pid=post.id) }}">
+                                {% if current_user.is_favorite(post.id) %}
+                                    取消喜欢
+                                {% else %}
+                                    喜欢
+                                {% endif %}
+                            </span>
+                            (<span class="collect_count">{{ post.favorites.count() }}</span>)
+                        </span>
+                    {% endif %}
+                {% endif %}
+                <a style="float:right;" target="_blank" href="{{ url_for('posts.post_show', id=post.id) }}"><span class="label label-default">本文链接</span></a>
+            </div>
+        </div>
+    {% endfor %}
+
+    {{ pagination_show(pagination,'user.user_info',user.username) }}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+        $(function () {
+            $('.collect').on('click', function () {
+                _this = this;
+                $.get($(this).attr('url'), function(){
+                    if($(_this).text().trim() == '取消喜欢'){
+                        $(_this).text('喜欢')
+                        $('.collect_count').text(parseInt($('.collect_count').text().toString())-1)
+                    }else {
+                        $(_this).text('取消喜欢')
+                        $('.collect_count').text(parseInt($('.collect_count').text().toString())+1)
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

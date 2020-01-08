@@ -1,0 +1,134 @@
+{% extends 'commons/base.html' %}
+{% from 'commons/macro.html' import pagination_show %}
+{% block title %}博客内容详情 - {{ post.user.username }}{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style>
+        .content {
+            width: 80%;
+            min-height: 600px;
+            padding: 50px 90px;
+            word-wrap: break-word;
+            word-break: break-all;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06);
+            margin: auto;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background: white;
+        }
+        body{
+            -webkit-user-select: auto;
+        }
+        .content2{
+            width: 80%;
+            margin: auto;
+        }
+        .content_pl{
+            width: 90%;
+            min-height: 65px;
+            resize: none;
+            font-size: 16px;
+            float: left;
+            margin-left: 5px;
+            margin-right: 10px;
+        }
+        .content_sub{
+            width: 8%;
+            min-height: 65px;
+            display: block;
+            font-size: 16px;
+        }
+    </style>
+{% endblock %}
+
+{% block page_content %}
+    <img style="width: 48px; height: 48px; border-radius: 50%; float: left;" src="{{ url_for('static', filename='uploads/' + post.user.icon) }}" alt="...">
+    {% if current_user.username == post.user.username %}
+        <a style="float: left; position: relative; left: -51px; top: 55px" href="{{ url_for('posts.edit', id=post.id) }}"><span class="btn btn-primary">编辑</span></a>
+        <a style="float: left; position: relative; left: -105px; top: 100px" href="{{ url_for('user.del_post', id=post.id) }}"><span class="btn btn-danger">删除</span></a>
+    {% endif %}
+    <div class="content">
+        {% if post.body_html %}
+            {{ post.body_html | safe }}
+        {% else %}
+            {{ post.content }}
+        {% endif %}
+    </div>
+    <div class="content2">
+        <form method="post" style="padding-bottom: 15px; border-bottom: 1px solid #eee">
+            {{ form.hidden_tag() }}<b>共{{ count }}条</b>
+            {{ form.body.label }}
+            {% if current_user.is_authenticated %}
+                {% if current_user.username != post.user.username %}
+                    <span class="btn btn-warning btn-sm" style="float: right; margin-top: -6px; font-size: 14px; padding: 3px;">
+                        <span class="collect" url="{{ url_for('posts.collect', pid=post.id) }}">
+                            {% if current_user.is_favorite(post.id) %}
+                                取消喜欢
+                            {% else %}
+                                喜欢
+                            {% endif %}
+                        </span>
+                        (<span class="collect_count">{{ fav_count }}</span>)
+                    </span>
+                {% else %}
+                    <span class="btn btn-warning btn-sm disabled" style="float: right; margin-top: -6px; font-size: 14px; padding: 3px;">被({{ fav_count }})人喜欢</span>
+                {% endif %}
+            {% else %}
+                <span class="btn btn-warning btn-sm disabled" style="float: right; margin-top: -6px; font-size: 14px; padding: 3px;">被({{ fav_count }})人喜欢</span>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+                {{ form.body(class="content_pl form-control") }}
+                {{ form.submit(class="content_sub btn btn-primary") }}
+            {% endif %}
+        </form>
+        {% for comment in comments %}
+            <div class="media" style="box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px; padding: 10px; margin-bottom: -5px">
+                <div class="media-left">
+                    <a href="{{ url_for('user.user_info', username=comment.user.username) }}" target="_blank">
+                        <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='uploads/' + comment.user.icon) }}" alt="...">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <div style="float: right">{{ moment(comment.timestamp).fromNow() }}</div>
+                    <h4 class="media-heading">{{ comment.user.username }}</h4><br>
+                    <span style="max-width: 950px; font-size: 16px">
+                        {% if comment.body_html %}
+                            {{ comment.body_html | safe }}
+                        {% else %}
+                            {{ comment.body }}
+                        {% endif %}
+                    </span>
+                    {% if current_user.username == post.user.username %}
+                        <a style="float: right" class="btn btn-danger" href="{{ url_for('posts.del_comment', id=comment.id) }}">删除</a>
+                    {% elif current_user.id == comment.user_id %}
+                        <a style="float: right" class="btn btn-danger" href="{{ url_for('posts.del_comment', id=comment.id) }}">删除</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        {{ pagination_show(pagination,'posts.post_show',pid=post.id) }}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript">
+        $(function () {
+            $('.collect').on('click', function () {
+                _this = this;
+                $.get($(this).attr('url'), function(){
+                    if($(_this).text().trim() == '取消喜欢'){
+                        $(_this).text('喜欢')
+                        $('.collect_count').text(parseInt($('.collect_count').text().toString())-1)
+                    }else {
+                        $(_this).text('取消喜欢')
+                        $('.collect_count').text(parseInt($('.collect_count').text().toString())+1)
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

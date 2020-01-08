@@ -23,8 +23,9 @@ class User(UserMixin, db.Model):
 
     # 添加关联模型    我们后期想知道这个文章是谁发表的
     # 这个作者发表了哪些文章
-    posts = db.relationship('Posts', backref='user', lazy='dynamic')
+    posts = db.relationship('Posts', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     favorites = db.relationship('Posts', secondary="collections", backref=db.backref('users', lazy='dynamic'), lazy='dynamic')
+    comments = db.relationship('Comment', backref='user', lazy='dynamic', cascade='all, delete-orphan')
 
     # 1密码用户返回
     # 2不能读密码

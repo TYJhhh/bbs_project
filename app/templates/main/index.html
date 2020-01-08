@@ -1,29 +1,43 @@
 {% extends 'commons/base.html' %}
 {% from 'commons/macro.html' import pagination_show %}
 
-{% block title %}主页{% endblock %}
+{% block title %}首页{% endblock %}
 
 {% block page_content %}
-    {{ wtf.quick_form(form) }}
+    <span style="padding: 10px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px">全部博客</span>
     {% for post in posts %}
-        <div class="media">
+        <div class="media" style="padding: 10px; box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px">
             <div class="media-left">
-                <a href="#">
+                <a href="{{ url_for('user.index', username=post.user.username) }}" target="_blank">
                     <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='uploads/' + post.user.icon) }}" alt="...">
                 </a>
             </div>
             <div class="media-body">
                 <div style="float: right">{{ moment(post.timestamp).fromNow() }}</div>
                 <h4 class="media-heading">{{ post.user.username }}</h4>
-                {{ post.content }}
+                <span style="float: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 950px; max-height: 20px; color: grey">
+                    {% if post.body_html %}
+                        {{ post.body_text }}
+                    {% else %}
+                        {{ post.content }}
+                    {% endif %}
+                </span><br>
                 {% if current_user.is_authenticated %}
-                    <div class="collect" style="cursor: pointer" url="{{ url_for('posts.collect', pid=post.id) }}">
-                        {% if current_user.is_favorite(post.id) %}
-                            取消收藏
-                        {% else %}
-                            收藏
-                        {% endif %}
-                    </div>
+                    {% if current_user.username != post.user.username %}
+                        <span class="btn btn-warning btn-sm" style="font-size: 12px; padding: 0px;">
+                            <span class="collect" url="{{ url_for('posts.collect', pid=post.id) }}">
+                                {% if current_user.is_favorite(post.id) %}
+                                    取消喜欢
+                                {% else %}
+                                    喜欢
+                                {% endif %}
+                            </span>
+                        </span>
+                    {% endif %}
+                {% endif %}
+                <a style="float:right; margin-left: 5px" target="_blank" href="{{ url_for('posts.post_show', id=post.id) }}"><span class="label label-default">本文链接</span></a>
+                {% if current_user.username == post.user.username %}
+                    <span class="label label-success">可编辑</span>
                 {% endif %}
             </div>
         </div>
@@ -36,13 +50,13 @@
     {{ super() }}
     <script type="text/javascript">
         $(function () {
-            $('.collect').click(function () {
+            $('.collect').on('click', function () {
                 _this = this;
                 $.get($(this).attr('url'), function(){
-                    if($(_this).text() == '取消收藏'){
-                        $(_this).text('收藏')
+                    if($(_this).text().trim() == '取消喜欢'){
+                        $(_this).text('喜欢')
                     }else {
-                        $(_this).text('取消收藏')
+                        $(_this).text('取消喜欢')
                     }
                 });
             });

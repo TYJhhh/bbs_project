@@ -1,21 +1,38 @@
 import os
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
 from app.forms import RegisterForm, LoginForm, UploadedForm
-from app.models import User
+from app.models import User, Posts
 from app.extensions import db, photos
 from app.email import send_mail
 from flask_login import login_user, logout_user, current_user, login_required
 from PIL import Image
+import re
 
 user = Blueprint('user', __name__)
 
 
-@user.route('/', methods=['GET', 'POST'])
-def index():
+@user.route('/<username>/', methods=['GET', 'POST'])
+def index(username):
     # GET请求 为了 让用户看到 展示的界面
-    return '我是个人中心页面'
-
+    u = User.query.filter_by(username=username).first_or_404()
+    return render_template('user/gerenzhongxin.html', user=u)
     # post请求为了提交数据
+
+@user.route('/my_blog/<username>')
+def my_blog(username):
+    u = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)  # 用户想查看第几页
+    pagination = u.posts.order_by(Posts.timestamp.desc()).paginate(page, per_page=5, error_out=False)
+    posts = pagination.items
+    return render_template('user/myblog.html', user=u, posts=posts, pagination=pagination)
+
+@user.route('/my_fav/<username>')
+def my_fav(username):
+    u = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)  # 用户想查看第几页
+    pagination = u.favorites.order_by(Posts.timestamp.desc()).paginate(page, per_page=5, error_out=False)
+    posts = pagination.items
+    return render_template('user/myCollection.html', user=u, posts=posts, pagination=pagination)
 
 
 # 注册
@@ -85,6 +102,7 @@ def before_request():
 
 
 @user.route('/logout/')
+@login_required
 def logout():
     logout_user()
     flash("退出成功")
@@ -92,6 +110,7 @@ def logout():
 
 
 @user.route('/change_icon/', methods=['POST', 'GET'])
+@login_required
 def change_icon():
     form = UploadedForm()
     if form.validate_on_submit():
@@ -116,7 +135,7 @@ def change_icon():
         # 然后把上传以后的 裁剪后 的 保存到数据库中
         current_user.icon = filename    # 通过更新属性的值来更新数据库
         db.session.add(current_user)    # 更新当前用户的信息
-        flash("头像已保存")
+        # flash("头像已保存")
 
         # 个人资料
         current_user.name = form.name.data
@@ -125,20 +144,35 @@ def change_icon():
         db.session.add(current_user._get_current_object())
         db.session.commit()
         flash('资料修改成功')
-        return redirect(url_for('user.user_info'))
+        return redirect(url_for('user.index', username=current_user.username))
     img_url = photos.url(current_user.icon) # 获取上传图片的地址 用于显示
     form.name.data = current_user.name
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
-    return render_template('user/change_icon.html', form=form, img_url=img_url)
+    return render_template('user/change_icon.html', form=form, img_url=img_url, user=current_user)
 
 def random_string(length=32):
     import random
     base_string = 'qwertyuiopasdfghjklzxcvbnm0123456789'
     return "".join(random.choice(base_string) for i in range(length))
 
-@user.route('/user_info')
-@login_required
-def user_info():
-    # u = User.query.filter_by(username=username).first_or_404()
-    return render_template('user/user.html')
+@user.route('/user_info/<username>')
+def user_info(username):
+    u = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)  # 用户想查看第几页
+    pagination = u.posts.order_by(Posts.timestamp.desc()).paginate(page, per_page=10, error_out=False)
+    posts = pagination.items
+    # for post in posts:
+    #     if post.body_html:  # /<\.+?>/g
+    #         p = r'<\/?.+?>'
+    #         re.compile(p)
+    #         post.body_text = re.sub(p, "", post.body_html)
+    return render_template('user/user.html', user=u, posts=posts, pagination=pagination)
+
+@user.route('/del_post/<int:id>')
+def del_post(id):
+    post = Posts.query.get_or_404(id)
+    db.session.delete(post)
+    db.session.commit()
+    flash("删除成功")
+    return redirect(url_for('user.my_blog', username=current_user.username))
