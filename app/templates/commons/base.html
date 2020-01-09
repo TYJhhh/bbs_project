@@ -6,7 +6,7 @@
 
 {# 定制导航条 #}
 {% block navbar %}
-    <nav class="navbar navbar-inverse" style="border-radius: 0px 0px 5px 5px; -webkit-user-select: none; font-size: 16px">
+    <nav class="navbar navbar-inverse" style="-webkit-user-select: none; font-size: 16px;">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -85,15 +85,16 @@
 {# 定制样式 #}
 {% block styles %}
     {{ super() }}
+{#    <link rel="stylesheet" href="{{ url_for('static', filename='css/font.css') }}">#}
     <style>
         body{
-            -webkit-user-select: none;
-            {#background: #f6f6f6;#}
             font-family: "田氏宋体旧字形";
-            background-image: url(/images/1214879.jpg);
-            background-repeat: no-repeat;
-            -webkit-background-size: 100% 100%;
-            z-index: -1;
+            -webkit-user-select: none;
+            background-image: url(/images/1214885.jpg);
+            -webkit-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            z-index: -2;
         }
     </style>
 {% endblock %}

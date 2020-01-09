@@ -7,7 +7,7 @@ from app.extensions import db
 app = create_app('default')
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
-# python manage.py  runserver -d -r -p 5005 -h 0.0.0.0 --threaded
+# python manage.py runserver -d -r -p 5005 -h 0.0.0.0 --threaded
 # python manage.py db init  初始化迁移目录
 # python manage.py db migrate  生成迁移脚本
 # python manage.py db upgrade  映射到数据库中

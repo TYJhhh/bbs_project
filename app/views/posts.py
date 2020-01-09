@@ -72,6 +72,7 @@ def edit(id):
             p_re = r'<\/?.+?>'
             re.compile(p_re)
             post.body_text = re.sub(p_re, "", post.body_html)
+        flash("操作成功")
         return redirect(url_for('posts.post_show', id=post.id, post=post))
     form.content.data = post.content
     return render_template('posts/post_edit.html', form=form, modify_code=159)

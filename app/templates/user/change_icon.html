@@ -37,7 +37,7 @@
         <div class="user_info">
             <div style="width: 600px; margin: 5px 0 0 10px">
                 {% if img_url %}
-                    <img style="border-radius: 50%;width: 100px;height:100px;" src="{{ img_url }}" alt="头像">
+                    <img style="border-radius: 50%;width: 100px;height:100px; border: 1px solid #ccc" src="{{ img_url }}" alt="头像">
                 {% endif %}
                 {{ wtf.quick_form(form) }}
             </div>

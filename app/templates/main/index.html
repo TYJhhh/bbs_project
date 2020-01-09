@@ -12,50 +12,126 @@
             border-radius: 5px;
             background: white;
         }
+        .media-heading{font-size: 12px}
+        .left{background: #f6f6f6; width: 770px; float: left;box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06);padding: 25px 25px 21px 25px;margin-bottom: 40px; border-radius:10px}
+        .right{display: inline-block; margin-left: 20px}
+        /*以下日历样式*/
+        #data {padding: 5px; width: 320px;box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06);margin: 0px auto;border-radius:10px; background: white; }
+        #data>p {display: flex;}
+        #data>h5 {text-align: center;}
+        #data>p>span {padding: 0 10px;}
+        #prev, #next {cursor: pointer;font-size: 14px;}
+        #prev {position: relative;left: 230px;}
+        #nian {flex: 1;text-align: center;}
+        #title {overflow: hidden;list-style: none;background: #00ABE3; color: #FFFFFF}
+        #title>li {float: left;width: 42px;height: 26px;line-height: 26px;text-align: center;}
+        #date {overflow: hidden;list-style: none;}
+        ul{padding-inline-start: 5px;}
+        #date>li {float: left;width: 40px;height: 34px;margin: 1px 1px;border: 2px solid rgba(0, 0, 0, 0);line-height: 34px;text-align: center;cursor: pointer;}
+        #date>.hover:hover {border: 2px solid #00ABE3;}
+        .active {color: #00ABE3;font-weight: bold;}
+        /*热搜样式*/
+
+        .hot{font-size: 12px;width: 320px;box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06);margin: 18px 0 0 20px;border-radius:10px;display: inline-block; background: white;}
+        .hot table{margin: 10px;width: 300px;border-collapse:collapse;border:none}
+        .hot span{float: right}
+        .hot_heard{height: 25px;text-align:center;line-height:45px; font-size: 14px; color: #f85d00}
+        .hot a{color: #0078b6;text-decoration:none;}
+        .hot thead th{color: #999999;text-align:center;}
+        .hot tbody tr{height: 36px;line-height: 36px; border-bottom: 1px solid #f2f2f5}
+        .hot tbody tr:hover{background: #E9EBEC; }
+        .hot tbody .td-01{color: #f26d5f}
+        .hot tbody span{color: #808080}
+        .th-01{width: 40px}
     </style>
 {% endblock %}
 
 {% block page_content %}
-    <span class="normal">全部博客</span>
-    {% for post in posts %}
-        <div class="media normal">
-            <div class="media-left">
-                <a href="{{ url_for('user.index', username=post.user.username) }}" target="_blank">
-                    <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='uploads/' + post.user.icon) }}" alt="...">
-                </a>
-            </div>
-            <div class="media-body">
-                <div style="float: right">{{ moment(post.timestamp).fromNow() }}</div>
-                <h4 class="media-heading">{{ post.user.username }}</h4>
-                <span style="float: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 950px; max-height: 20px; color: grey">
-                    {% if post.body_html %}
-                        {{ post.body_text }}
-                    {% else %}
-                        {{ post.content }}
-                    {% endif %}
-                </span><br>
-                {% if current_user.is_authenticated %}
-                    {% if current_user.username != post.user.username %}
-                        <span class="btn btn-warning btn-sm" style="font-size: 12px; padding: 0px;">
-                            <span class="collect" url="{{ url_for('posts.collect', pid=post.id) }}">
-                                {% if current_user.is_favorite(post.id) %}
-                                    取消喜欢
-                                {% else %}
-                                    喜欢
-                                {% endif %}
+    <div class="left">
+        <span class="normal">全部博客</span>
+        {% for post in posts %}
+            <div class="media normal">
+                <div class="media-left">
+                    <a href="{{ url_for('user.index', username=post.user.username) }}" target="_blank">
+                        <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%; border: 1px solid #ccc" src="{{ url_for('static', filename='uploads/' + post.user.icon) }}" alt="...">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <div style="float: right">{{ moment(post.timestamp).fromNow() }}</div>
+                    <h4 class="media-heading">{{ post.user.username }}</h4>
+                    <span style="float: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 550px; max-height: 20px; color: grey">
+                        {% if post.body_html %}
+                            {{ post.body_text }}
+                        {% else %}
+                            {{ post.content }}
+                        {% endif %}
+                    </span><br>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.username != post.user.username %}
+                            <span class="btn btn-warning btn-sm" style="font-size: 12px; padding: 0px;">
+                                <span class="collect" url="{{ url_for('posts.collect', pid=post.id) }}">
+                                    {% if current_user.is_favorite(post.id) %}
+                                        取消喜欢
+                                    {% else %}
+                                        喜欢
+                                    {% endif %}
+                                </span>
                             </span>
-                        </span>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <a style="float:right; margin-left: 5px" target="_blank" href="{{ url_for('posts.post_show', id=post.id) }}"><span class="label label-default">本文链接</span></a>
-                {% if current_user.username == post.user.username %}
-                    <span class="label label-success">可编辑</span>
-                {% endif %}
+                    <a style="float:right; margin-left: 5px" target="_blank" href="{{ url_for('posts.post_show', id=post.id) }}"><span class="label label-default">本文链接</span></a>
+                    {% if current_user.username == post.user.username %}
+                        <span class="label label-success">可编辑</span>
+                    {% endif %}
+                </div>
             </div>
+        {% endfor %}
+        {{ pagination_show(pagination,'main.index') }}
+    </div>
+    <!-- 日历显示 -->
+    <div class="right">
+        <div id="data" >
+            <p>
+                <span id="prev"><</span><span id="nian">2017年</span><span id="next"> ></span>
+            </p>
+            <h5 id="yue">一月</h5>
+            <ul id="title">
+                <li>日</li>
+                <li>一</li>
+                <li>二</li>
+                <li>三</li>
+                <li>四</li>
+                <li>五</li>
+                <li>六</li>
+            </ul>
+            <ul id="date"></ul>
         </div>
-    {% endfor %}
+    </div>
 
-    {{ pagination_show(pagination,'main.index') }}
+    <div class="hot">
+        <div class="hot_heard">微博热搜榜</div>
+        <table>
+            <thead>
+            <tr class="thead_tr">
+                <th class="th-01">序号</th>
+                <th class="th-02" style="text-align:left;">关键词<span style="color: red">热度</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in range(10) %}
+            <tr>
+                <td class="td-01" style="text-align: center">{{i+1}}</td>
+                <td class="td-02">
+                    <span>{{rank[i+1][2]}}</span>
+                    <span style="float: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 210px">
+                        <a href="https://s.weibo.com/{{rank[i+1][3]}}" target="_blank">{{rank[i+1][1]}}</a>
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -73,5 +149,50 @@
                 });
             });
         });
+        var dat = new Date(); //当前时间
+         console.log(dat)
+         var nianD = dat.getFullYear(); //当前年份
+         var yueD = dat.getMonth(); //当前月
+         var tianD = dat.getDate(); //当前天 这保存的年月日 是为了 当到达当前日期 有对比
+
+         add(); //进入页面第一次渲染
+
+         function add() {
+             document.getElementById('date').innerHTML = "";
+             var nian = dat.getFullYear(); //当前年份
+             var yue = dat.getMonth(); //当前月
+             var tian = dat.getDate(); //当前天
+             var arr = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+             document.getElementById('nian').innerText = nian;
+             document.getElementById('yue').innerText = arr[yue];
+             var setDat = new Date(nian, yue + 1, 1 - 1); //把时间设为下个月的1号 然后天数减去1 就可以得到 当前月的最后一天;
+             var setTian = setDat.getDate(); //获取 当前月最后一天
+             var setZhou = new Date(nian, yue, 1).getDay(); //获取当前月第一天 是 周几
+
+             for (var i = 0; i < setZhou; i++) { //渲染空白 与 星期 对应上
+                 var li = document.createElement('li');
+                 document.getElementById('date').appendChild(li);
+             }
+
+             for (var i = 1; i <= setTian; i++) { //利用获取到的当月最后一天 把 前边的 天数 都循环 出来
+                 var li = document.createElement('li');
+                 li.innerText = i;
+                 if (nian == nianD && yue == yueD && i == tianD) {
+                     li.className = "active";
+                 } else {
+                     li.className = "hover";
+                 }
+                 document.getElementById('date').appendChild(li);
+             }
+
+         }
+         document.getElementById("next").onclick = function() {
+             dat.setMonth(dat.getMonth() + 1); //当点击下一个月时 对当前月进行加1;
+             add(); //重新执行渲染 获取去 改变后的 年月日 进行渲染;
+         };
+         document.getElementById("prev").onclick = function() {
+             dat.setMonth(dat.getMonth() - 1); //与下一月 同理
+             add();
+         };
     </script>
 {% endblock %}
