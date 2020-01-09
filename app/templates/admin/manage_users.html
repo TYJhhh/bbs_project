@@ -1,0 +1,37 @@
+{% extends 'admin/manage_base.html' %}
+{% from 'commons/macro.html' import pagination_show %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block navbar %}
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="active"><a href="{{ url_for('admin.manage_users', uname=uname) }}">用户管理</a></li>
+      <li role="presentation"><a href="{{ url_for('admin.manage_posts', uname=uname) }}">博客管理</a></li>
+      <li role="presentation"><a href="{{ url_for('admin.manage_comments', uname=uname) }}">评论管理</a></li>
+    </ul>
+{% endblock %}
+
+{% block page_content %}
+    <table class="table table-bordered table-hover table-striped table-condensed" style="margin-top: 40px">
+        <tr>
+            <th style="text-align: center">id</th>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>邮箱</th>
+            <th style="text-align: center">操作</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td style="text-align: center">{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>**********</td>
+                <td>{{ user.email }}</td>
+                <td style="text-align: center">
+                    <a class="btn btn-default" href="{{ url_for('user.index', username=user.username) }}" target="_blank">查看</a>
+                    <a class="btn btn-primary" href="{{ url_for('user.change_user_info', id=user.id) }}" target="_blank">修改</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {{ pagination_show(pagination,'admin.manage_users', uname=uname) }}
+{% endblock %}

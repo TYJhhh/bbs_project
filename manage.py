@@ -1,5 +1,5 @@
 from flask_script import Manager
-from app.models import User, Posts
+from app.models import User, Posts, Comment, Admin
 from flask_migrate import MigrateCommand
 from app import create_app
 from app.extensions import db

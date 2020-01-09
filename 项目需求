@@ -8,6 +8,8 @@
 
 # bbs_project   # 根目录
 ## app          # 程序目录
+## hotSearch.py # 爬虫部分
+## manage.py    # 项目启动
 ### static      # 静态资源目录
 #### js         # js目录
 #### css        # css目录

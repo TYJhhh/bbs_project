@@ -1,6 +1,6 @@
 import os
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app
-from app.forms import RegisterForm, LoginForm, UploadedForm, ChangePwd, ForgetPwd
+from app.forms import RegisterForm, LoginForm, UploadedForm, ChangePwd, ForgetPwd, ChangeUserInfo
 from app.models import User, Posts
 from app.extensions import db, photos
 from app.email import send_mail
@@ -170,10 +170,11 @@ def user_info(username):
 @user.route('/del_post/<int:id>')
 def del_post(id):
     post = Posts.query.get_or_404(id)
+    uname = post.user.username
     db.session.delete(post)
     db.session.commit()
     flash("删除成功")
-    return redirect(url_for('user.my_blog', username=current_user.username))
+    return redirect(url_for('user.my_blog', username=uname))
 
 @user.route('/change_password/<username>', methods=['POST', 'GET'])
 @login_required
@@ -191,6 +192,23 @@ def change_password(username):
         else:
             flash('原密码错误')
     return render_template('user/change_password.html', form=form)
+
+@user.route('/change_user_info/<id>', methods=['POST', 'GET'])
+def change_user_info(id):
+    form = ChangeUserInfo()
+    if form.validate_on_submit():
+        u = User.query.filter_by(id=id).first
+        if not u:
+            flash("该用户不存在")
+        else:
+            u.username = form.username.data
+            u.password = form.password.data
+            u.email = form.email.data
+            db.session.add(u)
+            db.session.commit()
+            flash("修改成功")
+    return render_template('admin/change_user_info.html', form=form)
+
 
 @user.route('/forget_password/', methods=['POST', 'GET'])
 def forget_password():

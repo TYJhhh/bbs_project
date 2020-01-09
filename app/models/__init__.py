@@ -1,6 +1,7 @@
 from .users import User
 from .posts import Posts
 from .comments import Comment
+from .admin import Admin
 from app.extensions import db
 
 # 用户帖子的中间表  主键  用户的id   帖子的id

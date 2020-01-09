@@ -43,3 +43,9 @@ class ForgetPwd(FlaskForm):
     username = StringField('用户名', validators=[DataRequired(), Length(6, 30, message="用户名长度不符合要求")])
     email = StringField('邮箱', validators=[Email(message="邮箱格式不正确")])
     submit = SubmitField('提交')
+
+class ChangeUserInfo(FlaskForm):
+    username = StringField('用户名', validators=[DataRequired(), Length(6, 30, message="用户名长度不符合要求")])
+    password = PasswordField('密码', validators=[DataRequired(), Length(6, 30, message="密码长度不符合要求")])
+    email = StringField('邮箱', validators=[Email(message="邮箱格式不正确")])
+    submit = SubmitField('提交修改')
