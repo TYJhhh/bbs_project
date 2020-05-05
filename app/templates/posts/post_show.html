@@ -86,7 +86,7 @@
         {% for comment in comments %}
             <div class="media" style="box-shadow: 0 1px 10px 2px rgba(0, 0, 0, .06); border-radius: 5px; padding: 10px; margin-bottom: -5px; background: white">
                 <div class="media-left">
-                    <a href="{{ url_for('user.user_info', username=comment.user.username) }}" target="_blank">
+                    <a href="{{ url_for('user.index', username=comment.user.username) }}" target="_blank">
                         <img class="media-object" style="width: 64px; height: 64px; border-radius: 50%" src="{{ url_for('static', filename='uploads/' + comment.user.icon) }}" alt="...">
                     </a>
                 </div>
